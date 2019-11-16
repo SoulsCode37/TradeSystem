@@ -57,17 +57,7 @@ public class Trade {
 			
 			@Override
 			public void run() {
-				setStatus(TradeStatus.EXPIRED);
-				if(receiver != null) {
-					User in = Main.getInstance().usersManager.getUser(inName);
-					in.getTradesIn().remove(in.getTrade(TradeType.IN, outName));
-					receiver.getPlayer().sendMessage(Messages.convert("trade_request_expired.receiver", true).replace("%from%", sender.getPlayer().getName()));
-				}
-				if(sender != null) {
-					sender.getPlayer().sendMessage(Messages.convert("trade_request_expired.sender", true).replace("%to%", sender.getPlayer().getName()));
-					User out = Main.getInstance().usersManager.getUser(outName);
-					out.getTradesOut().remove(out.getTrade(TradeType.OUT, inName));
-				}	
+				expireTrade();
 			}
 		}, Settings.EXPIRE_TIME * 20);
 	}
@@ -77,14 +67,30 @@ public class Trade {
 		Bukkit.getScheduler().cancelTask(countdown.getTaskId());
 	}
 	
+	// Expire trade
+	public void expireTrade() {
+		setStatus(TradeStatus.EXPIRED);
+		stopCountdown();
+		User in = Main.getInstance().usersManager.getUser(inName);
+		User out = Main.getInstance().usersManager.getUser(outName);
+		// Checks if a player has left
+		if(receiver != null && in != null && !in.getTradesIn().isEmpty()) {
+			in.getTradesIn().remove(in.getTrade(TradeType.IN, outName));
+			receiver.getPlayer().sendMessage(Messages.convert("trade_request_expired.receiver", true).replace("%from%", sender.getPlayer().getName()));
+		}
+		if(sender != null && out != null && !out.getTradesOut().isEmpty()) {
+			sender.getPlayer().sendMessage(Messages.convert("trade_request_expired.sender", true).replace("%to%", receiver.getPlayer().getName()));
+			out.getTradesOut().remove(out.getTrade(TradeType.OUT, inName));
+		}	
+	}
+	
 	// Start trade
 	public void startTrading() {
 		setStatus(TradeStatus.ACCEPTED);
-		Main.getInstance().debug("Status: " + getStatus());
 		
 		this.stopCountdown();
 		
-		if(Main.isPremium && Settings.COOLDOWN_PLAYER) {
+		if(Settings.COOLDOWN_PLAYER) {
 			if(TradesCooldowns.isOnCooldown(outName, inName))
 				TradesCooldowns.removeCooldown(outName, inName);
 			if(TradesCooldowns.isOnCooldown(inName, outName))
@@ -112,8 +118,13 @@ public class Trade {
 			return;
 		}
 		
+		if(InventoryHelper.isTradeInventoryEmpty(getTradeInterface())) {
+			sender.getPlayer().sendMessage(Messages.convert("inventories_empty", true));
+			receiver.getPlayer().sendMessage(Messages.convert("inventories_empty", true));
+			return;
+		}
+		
 		setStatus(TradeStatus.FINISHED);
-		Main.getInstance().debug("Status: " + getStatus());
 		
 		sender.getPlayer().getOpenInventory().close();
 		receiver.getPlayer().getOpenInventory().close();
@@ -130,7 +141,7 @@ public class Trade {
 	// Deny trade request
 	public void denyTrading() {
 		setStatus(TradeStatus.DENIED);
-		Main.getInstance().debug("Status: " + getStatus());
+
 		this.stopCountdown();
 		sender.getPlayer().sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", sender.getPlayer().getName()));
 		receiver.getPlayer().sendMessage(Messages.convert("trade_request_denied.receiver", true).replace("%from%", sender.getPlayer().getName()));
@@ -141,7 +152,6 @@ public class Trade {
 	// Cancel trade request
 	public void cancelTrading(String who) {
 		setStatus(TradeStatus.CANCELLED);
-		Main.getInstance().debug("Status: " + getStatus());
 		
 		sender.getPlayer().getOpenInventory().close();
 		receiver.getPlayer().getOpenInventory().close();
@@ -169,6 +179,7 @@ public class Trade {
 
 	public void setStatus(TradeStatus status) {
 		this.status = status;
+		Main.getInstance().debug(sender.getPlayer().getName() + "--> " + receiver.getPlayer().getName() + ": " + status);
 	}
 
 	public TradeInterface getTradeInterface() {

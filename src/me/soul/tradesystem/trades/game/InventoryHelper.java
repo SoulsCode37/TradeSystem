@@ -17,6 +17,19 @@ public class InventoryHelper {
 		return false;
 	}
 	
+	// Check if both (sender's and receiver's) inventories are empty
+	public static boolean isTradeInventoryEmpty(TradeInterface tradeInt) {
+		// Receiver inventory
+		for(int i : tradeInt.receiverSlots)
+			if(tradeInt.getInv().getItem(i) != null && !tradeInt.getInv().getItem(i).getType().equals(Material.AIR))
+				return false;
+		// Sender inventory
+		for(int i : tradeInt.senderSlots)
+			if(tradeInt.getInv().getItem(i) != null && !tradeInt.getInv().getItem(i).getType().equals(Material.AIR))
+				return false;
+		return true;
+	}
+	
 	// Try to find next good slot
 	public static TradeItem getNextGoodSlot(Inventory inv, int[] slots, ItemStack item) {
 		for(int i = 0; i < slots.length; i++) {

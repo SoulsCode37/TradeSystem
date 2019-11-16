@@ -10,13 +10,8 @@ public class CTradeSystem implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-		// Ignore premium thing
-		if(lbl.equalsIgnoreCase("tradesystem")) {
-			if(Main.isPremium)
-				sender.sendMessage("§bSoulsCode's §9§lTradeSystem §bB1");
-			else
-				sender.sendMessage("§bSoulsCode's §9§lTradeSystem §bB1");
-		}
+		if(lbl.equalsIgnoreCase("tradesystem"))
+			sender.sendMessage("§bSoulsCode's §9§lTradeSystem §bB" + Main.getInstance().build);
 		return false;
 	}
 

@@ -26,6 +26,10 @@ public class TradesCooldowns {
 	}
 	
 	public static boolean isOnCooldown(String owner, String with) {
+		// Warning, players might exploit this
+		if(Bukkit.getPlayer(owner) == null)
+			return false;
+		
 		for(String s : getCooldown().keySet())
 			if(s.equals(owner) && getCooldown().get(owner).equals(with))
 				return !Bukkit.getPlayer(owner).hasPermission(Permissions.COOLDOWN_BYPASS);

@@ -34,6 +34,12 @@ public class User {
 	
 	// Save user settings to files
 	public void end() throws IOException {
+		// This format of for is used to prevent concurrent modification exception
+		for(int i = 0; i < getTradesOut().size(); i++)
+			getTradesOut().get(i).expireTrade();
+		for(int i = 0; i < getTradesIn().size(); i++)
+			getTradesIn().get(i).expireTrade();
+		
 		Main.getInstance().filesManager.getUsers().setTrades(in.getName(), this.trades);
 		Main.getInstance().filesManager.getUsers().setBlacklist(in.getName(), this.blacklist);
 	}

@@ -29,7 +29,7 @@ public class RightClickListener implements Listener {
 	// Used to handle right click trade requests
 	@EventHandler
 	public void onRightClick(PlayerInteractAtEntityEvent event) {
-		if(!Settings.RIGHT_CLICK || !Main.isPremium)
+		if(!Settings.RIGHT_CLICK)
 			return;
 		
 		Player player = event.getPlayer();
@@ -65,8 +65,7 @@ public class RightClickListener implements Listener {
 					return;
 				}
 				
-				// Ignore isPremium
-				if(Main.isPremium && Settings.COOLDOWN_PLAYER) {
+				if(Settings.COOLDOWN_PLAYER) {
 					if(!TradesCooldowns.isOnCooldown(player.getName(), clicked.getName())) {
 						// Send a request which is stored in the TradesQueue class
 						new Trade(player, clicked).sendRequest();

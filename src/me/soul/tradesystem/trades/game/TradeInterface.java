@@ -81,6 +81,7 @@ public class TradeInterface {
 		getTrade().getSender().getPlayer().openInventory(inv);
 	}
 	
+	// Lock sender's items
 	public void lockSender() {
 		this.setSenderLocked(true);
 		ItemStack lock = new ItemStack(Material.BARRIER);
@@ -90,6 +91,7 @@ public class TradeInterface {
 		this.inv.setItem(48, lock);
 	}
 	
+	// Lock receiver's items
 	public void lockReceiver() {
 		this.setReceiverLocked(true);
 		ItemStack lock = new ItemStack(Material.BARRIER);

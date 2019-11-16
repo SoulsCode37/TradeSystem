@@ -27,17 +27,25 @@ import me.soul.tradesystem.utils.Settings;
 
 public class Main extends JavaPlugin {
 
-	//TODO Trades GUI - Premium
-	//TODO Trades History - Premium
-	//TODO Do not allow trades if gui is empty - Lite
+	//TODO Trades GUI
+	//TODO Trades History
+	
+	// Build 1.2 changes:
+	// Fixed a bug where sender's expire message was wrong
+	// Fixed inventory click listener null pointer
+	// Fixed run task exception in Trade.class when a trade was expiring and a player was offline
+	// Fixed run task exception in TradesCooldowns.class
+	// Changed how status debug messages works
+	// Removed premium things from the code
+	// Added check and message for empty inventories
 	
 	private static Main instance;
 	public FilesManager filesManager;
 	public TradesQueue tradesQueue;
 	public UsersManager usersManager;
 	
-	// Ignore this and all 'premium' things, thanks
-	public static boolean isPremium = true;
+	// Number of build
+	public int build = 1;
 	
 	ConsoleCommandSender send = getServer().getConsoleSender();
 	
@@ -56,16 +64,16 @@ public class Main extends JavaPlugin {
 		tradesQueue = new TradesQueue();
 		usersManager = new UsersManager();
 		
-		send.sendMessage("§a> Registering listeners...");
+		send.sendMessage("§a> Loading listeners...");
 		this.registerListeners();
-		send.sendMessage("§a> Registering commands...");
+		send.sendMessage("§a> Loading commands...");
 		this.registerCommands();
 		
 		saveDefaultConfig();
 		
 		reload();
 		
-		send.sendMessage("§aTradeSystem has been enabled - " + (isPremium ? "Premium" : "Lite") + " version");
+		send.sendMessage("§aTradeSystem has been enabled B" + this.build);
 	}
 	
 	public void onDisable() {
@@ -107,10 +115,7 @@ public class Main extends JavaPlugin {
 		getCommand("tradedeny").setExecutor(new CTradeDeny());
 		getCommand("tradesystem").setExecutor(new CTradeSystem());
 		getCommand("toggletrades").setExecutor(new CToggleTrades());
-		if(isPremium) {
-			getCommand("tblacklist").setExecutor(new CTradesBlacklist());
-		}
-			
+		getCommand("tblacklist").setExecutor(new CTradesBlacklist());
 	}
 	
 	public static Main getInstance() {

@@ -22,7 +22,7 @@ public class InventoryClickListener implements Listener {
 		User user = Main.getInstance().usersManager.getUser(event.getWhoClicked().getName());
 		
 		// Event getView() for Bugs-Free 1.14
-		if(!event.getView().getTitle().equals(Messages.convert("trade_inventory.title", false))  || event.getClickedInventory().equals(user.getPlayer().getInventory()))
+		if(event.getView() != null && !event.getView().getTitle().equals(Messages.convert("trade_inventory.title", false))  || event.getClickedInventory().equals(user.getPlayer().getInventory()))
 			return;
 		
 		if(event.getCurrentItem() == null)

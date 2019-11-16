@@ -16,7 +16,6 @@ import me.soul.tradesystem.utils.Settings;
 
 public class CTrade implements CommandExecutor {
 
-	//TODO Cannot trade urself
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
 		if(lbl.equalsIgnoreCase("trade")) {
@@ -62,7 +61,7 @@ public class CTrade implements CommandExecutor {
 					return false;
 				}
 				
-				if(Main.isPremium && Settings.COOLDOWN_PLAYER) {
+				if(Settings.COOLDOWN_PLAYER) {
 					if(!TradesCooldowns.isOnCooldown(player.getName(), args[0])) {
 						// Send a request which is stored in the TradesQueue class
 						new Trade(player, in).sendRequest();

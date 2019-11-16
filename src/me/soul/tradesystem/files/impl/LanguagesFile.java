@@ -2,7 +2,6 @@ package me.soul.tradesystem.files.impl;
 
 import java.io.IOException;
 
-import me.soul.tradesystem.Main;
 import me.soul.tradesystem.files.BaseFile;
 
 public class LanguagesFile extends BaseFile {
@@ -56,14 +55,11 @@ public class LanguagesFile extends BaseFile {
 		getFile().set("no_permission", "&cSorry, you do not have enough permissions to do that");
 		getFile().set("toggletrades_command.toggled", "&bTrades toggled &9&l%state%");
 		getFile().set("trade_command.trades_off", "&4&l%name%&c has deactivated trades");
-		
-		// Ignore is Premium
-		if(Main.isPremium) {
-			getFile().set("premium.on_cooldown", "&cSorry, your trade requests with &4&l%name%&c are on cooldown");
-			getFile().set("premium.blacklist_command.syntax", "&cInvalid syntax, use /tblacklist <add/remove> <player>");
-			getFile().set("premium.blacklist_command.blacklisted", "&cYou wont receive any trade request from &4&l%name%");
-			getFile().set("premium.blacklist_command.unblacklisted", "&aYou will receive trade requests from &2&l%name%");
-		}
+		getFile().set("inventories_empty", "&cBoth inventories are empty");
+		getFile().set("premium.on_cooldown", "&cSorry, your trade requests with &4&l%name%&c are on cooldown");
+		getFile().set("premium.blacklist_command.syntax", "&cInvalid syntax, use /tblacklist <add/remove> <player>");
+		getFile().set("premium.blacklist_command.blacklisted", "&cYou wont receive any trade request from &4&l%name%");
+		getFile().set("premium.blacklist_command.unblacklisted", "&aYou will receive trade requests from &2&l%name%");
 		saveFile();
 	}
 }
