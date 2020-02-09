@@ -30,14 +30,9 @@ public class Main extends JavaPlugin {
 	//TODO Trades GUI
 	//TODO Trades History
 	
-	// Build 1.2 changes:
-	// Fixed a bug where sender's expire message was wrong
-	// Fixed inventory click listener null pointer
-	// Fixed run task exception in Trade.class when a trade was expiring and a player was offline
-	// Fixed run task exception in TradesCooldowns.class
-	// Changed how status debug messages works
-	// Removed premium things from the code
-	// Added check and message for empty inventories
+	// Build 2 changes:
+	// Added 1.15.2 Compatibility:
+	// - Fixed many bugs
 	
 	private static Main instance;
 	public FilesManager filesManager;
@@ -45,7 +40,7 @@ public class Main extends JavaPlugin {
 	public UsersManager usersManager;
 	
 	// Number of build
-	public int build = 1;
+	public int build = 2;
 	
 	ConsoleCommandSender send = getServer().getConsoleSender();
 	
@@ -79,6 +74,7 @@ public class Main extends JavaPlugin {
 	public void onDisable() {
 		for(Player p : Bukkit.getOnlinePlayers())
 			try {
+				debug("Saving account profile for '" + p.getName() + "'");
 				usersManager.getUser(p.getName()).end();
 			} catch (IOException e) {
 				debug("Could not end profile for '" + p.getName() + "'");
@@ -90,7 +86,9 @@ public class Main extends JavaPlugin {
 	public void reload() {
 		if(Bukkit.getOnlinePlayers().isEmpty())
 			return;
+		
 		debug("Reloading users...");
+		
 		for(Player p : Bukkit.getOnlinePlayers())
 			usersManager.addUser(new User(p.getName()));
 	}

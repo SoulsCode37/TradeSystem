@@ -7,12 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.soul.tradesystem.Main;
-import me.soul.tradesystem.trades.Trade;
-import me.soul.tradesystem.trades.TradesCooldowns;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
 import me.soul.tradesystem.utils.Permissions;
-import me.soul.tradesystem.utils.Settings;
 
 public class CTrade implements CommandExecutor {
 
@@ -43,37 +40,33 @@ public class CTrade implements CommandExecutor {
 			
 			Player in = Bukkit.getPlayer(args[0]);
 			
-			if(!Settings.WORLDS_TRADES && !player.getWorld().getName().equals(in.getWorld().getName())) {
-				sender.sendMessage(Messages.convert("trade_command.invalid_world", true).replace("%name%", args[0]));
-				return false;
-			}
-			
-			if(user.canSendRequestTo(args[0])) {
-				User inUser = Main.getInstance().usersManager.getUser(args[0]);
+			if(user.canSendRequestTo(args[0]))
+//              OLD CODE
+//				User inUser = Main.getInstance().usersManager.getUser(args[0]);
+//				
+//				if(!inUser.hasTrades()) {
+//					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", args[0]));
+//					return false;
+//				}
+//				
+//				if(inUser.getBlacklist().contains(player.getName())) {
+//					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", args[0]));
+//					return false;
+//				}
+//				
+//				if(Settings.COOLDOWN_PLAYER) {
+//					if(!TradesCooldowns.isOnCooldown(player.getName(), args[0])) {
+//						// Send a request which is stored in the TradesQueue class
+//						new Trade(player, in).sendRequest();
+//						TradesCooldowns.cooldown(player.getName(), args[0]);
+//					} else 
+//						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", args[0]));
+//				} else {
+//					// Send a request which is stored in the TradesQueue class
+//					new Trade(player, in).sendRequest();
+//				}
 				
-				if(!inUser.hasTrades()) {
-					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", args[0]));
-					return false;
-				}
-				
-				if(inUser.getBlacklist().contains(player.getName())) {
-					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", args[0]));
-					return false;
-				}
-				
-				if(Settings.COOLDOWN_PLAYER) {
-					if(!TradesCooldowns.isOnCooldown(player.getName(), args[0])) {
-						// Send a request which is stored in the TradesQueue class
-						new Trade(player, in).sendRequest();
-						TradesCooldowns.cooldown(player.getName(), args[0]);
-					} else 
-						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", args[0]));
-				} else {
-					// Send a request which is stored in the TradesQueue class
-					new Trade(player, in).sendRequest();
-				}
-			} else
-				player.sendMessage(Messages.convert("wait_expire_time", true).replace("%to%", args[0]));
+				user.initializeTrade(in);
 		}
 		return false;
 	}

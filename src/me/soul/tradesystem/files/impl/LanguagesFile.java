@@ -49,17 +49,18 @@ public class LanguagesFile extends BaseFile {
 		getFile().set("trade_completed", "&aTrade successfully completed");
 		getFile().set("trade_command.syntax", "&cInvalid syntax, use /trade <player>");
 		getFile().set("trade_command.invalid_player", "&cPlayer offline or does not exist or is invalid");
-		getFile().set("trade_command.invalid_world", "&cYou and &4&l%name%&c are not on the same world");
+		getFile().set("trade_command.invalid_world", "&cTrades are disabled in your or in &4&l%name%&c's world");
+		getFile().set("trade_command.different_worlds", "&cYou and &4&l%name%&c are not on the same world");
 		getFile().set("trade_deny_command.syntax", "&cInvalid syntax, use /tradedeny <player>");
 		getFile().set("trade_deny_command.not_requested", "&cSorry, you do not have any trade request from &4&l%name%&c");
 		getFile().set("no_permission", "&cSorry, you do not have enough permissions to do that");
 		getFile().set("toggletrades_command.toggled", "&bTrades toggled &9&l%state%");
 		getFile().set("trade_command.trades_off", "&4&l%name%&c has deactivated trades");
 		getFile().set("inventories_empty", "&cBoth inventories are empty");
-		getFile().set("premium.on_cooldown", "&cSorry, your trade requests with &4&l%name%&c are on cooldown");
-		getFile().set("premium.blacklist_command.syntax", "&cInvalid syntax, use /tblacklist <add/remove> <player>");
-		getFile().set("premium.blacklist_command.blacklisted", "&cYou wont receive any trade request from &4&l%name%");
-		getFile().set("premium.blacklist_command.unblacklisted", "&aYou will receive trade requests from &2&l%name%");
+		getFile().set("on_cooldown", "&cSorry, your trade requests with &4&l%name%&c are on cooldown");
+		getFile().set("blacklist_command.syntax", "&cInvalid syntax, use /tblacklist <add/remove> <player>");
+		getFile().set("blacklist_command.blacklisted", "&cYou wont receive any trade request from &4&l%name%");
+		getFile().set("blacklist_command.unblacklisted", "&aYou will receive trade requests from &2&l%name%");
 		saveFile();
 	}
 }

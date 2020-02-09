@@ -25,7 +25,7 @@ public class CTradesBlacklist implements CommandExecutor {
 			}
 			
 			if(args.length < 2) {
-				sender.sendMessage(Messages.convert("premium.blacklist_command.syntax", true));
+				sender.sendMessage(Messages.convert("blacklist_command.syntax", true));
 				return false;
 			}
 			
@@ -37,12 +37,12 @@ public class CTradesBlacklist implements CommandExecutor {
 			case "add":
 				if(!user.getBlacklist().contains(target))
 					user.getBlacklist().add(target);
-				sender.sendMessage(Messages.convert("premium.blacklist_command.blacklisted", true).replace("%name%", target));
+				sender.sendMessage(Messages.convert("blacklist_command.blacklisted", true).replace("%name%", target));
 				break;
 			case "remove":
 				if(user.getBlacklist().contains(target)) 
 					user.getBlacklist().remove(target);
-				sender.sendMessage(Messages.convert("premium.blacklist_command.unblacklisted", true).replace("%name%", target));
+				sender.sendMessage(Messages.convert("blacklist_command.unblacklisted", true).replace("%name%", target));
 				break;
 			}
 		}

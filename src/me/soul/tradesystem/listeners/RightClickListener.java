@@ -9,15 +9,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 import me.soul.tradesystem.Main;
 import me.soul.tradesystem.trades.Trade;
-import me.soul.tradesystem.trades.TradesCooldowns;
 import me.soul.tradesystem.trades.enums.TradeType;
 import me.soul.tradesystem.users.User;
-import me.soul.tradesystem.utils.Messages;
 import me.soul.tradesystem.utils.Permissions;
 import me.soul.tradesystem.utils.Settings;
 
@@ -37,9 +34,6 @@ public class RightClickListener implements Listener {
 		if(!player.hasPermission(Permissions.RIGHT_CLICK_TRADE) || isCooldown(player.getName()))
 			return;
 		
-		if(!Settings.CREATIVE_REQUEST && player.getOpenInventory() != null && player.getOpenInventory().getType().equals(InventoryType.CREATIVE))
-			return;
-		
 		Entity right = event.getRightClicked();
 
 		if(right != null && (right instanceof Player)) {
@@ -52,36 +46,37 @@ public class RightClickListener implements Listener {
 			
 			silentCooldown(player.getName());
 			
-			if(out.canSendRequestTo(clicked.getName()) && !out.hasRequestFrom(clicked.getName())) {
-				User inUser = Main.getInstance().usersManager.getUser(clicked.getName());
+			if(out.canSendRequestTo(clicked.getName()) && !out.hasRequestFrom(clicked.getName()))
+//              OLD CODE
+//				User inUser = Main.getInstance().usersManager.getUser(clicked.getName());
+//				
+//				if(!inUser.hasTrades()) {
+//					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", clicked.getName()));
+//					return;
+//				}
+//				
+//				if(inUser.getBlacklist().contains(player.getName())) {
+//					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", clicked.getName()));
+//					return;
+//				}
+//				
+//				if(Settings.COOLDOWN_PLAYER) {
+//					if(!TradesCooldowns.isOnCooldown(player.getName(), clicked.getName())) {
+//						// Send a request which is stored in the TradesQueue class
+//						new Trade(player, clicked).sendRequest();
+//						TradesCooldowns.cooldown(player.getName(), clicked.getName());
+//					} else
+//						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", clicked.getName()));
+//				} else {
+//					// Send a request which is stored in the TradesQueue class
+//					new Trade(player, clicked).sendRequest();
+//				}
 				
-				if(!inUser.hasTrades()) {
-					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", clicked.getName()));
-					return;
-				}
-				
-				if(inUser.getBlacklist().contains(player.getName())) {
-					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", clicked.getName()));
-					return;
-				}
-				
-				if(Settings.COOLDOWN_PLAYER) {
-					if(!TradesCooldowns.isOnCooldown(player.getName(), clicked.getName())) {
-						// Send a request which is stored in the TradesQueue class
-						new Trade(player, clicked).sendRequest();
-						TradesCooldowns.cooldown(player.getName(), clicked.getName());
-					} else
-						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", clicked.getName()));
-				} else {
-					// Send a request which is stored in the TradesQueue class
-					new Trade(player, clicked).sendRequest();
-				}
-			} else if(out.hasRequestFrom(clicked.getName())) {
+				out.initializeTrade(clicked);
+			else if(out.hasRequestFrom(clicked.getName())) {
 				Trade trade = out.getTrade(TradeType.IN, clicked.getName());
 				trade.startTrading();
-			} else if(!out.canSendRequestTo(clicked.getName()))
-				player.sendMessage(Messages.convert("wait_expire_time", true).replace("%to%", clicked.getName()));
-			
+			}
 		}
 	}
 	
