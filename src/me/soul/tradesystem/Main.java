@@ -27,12 +27,23 @@ import me.soul.tradesystem.utils.Settings;
 
 public class Main extends JavaPlugin {
 
-	//TODO Trades GUI
-	//TODO Trades History
-	
-	// Build 2 changes:
-	// Added 1.15.2 Compatibility:
-	// - Fixed many bugs
+	/** Build 3 changes:
+	 Fixed Inventory Click bug: Players were not able to trade stained clay and barriers
+	 Fixed Trade command bug: Many users with similiar username caused a null pointer
+	 Fixed Inventory Click bug: Null pointers on click
+	 Reworked InventoryCloseListener.class
+	 Added an optin to add money to the trade
+	 Reworked the Trade Interface
+	 
+	 HotFix Changes (B3-SNAPSHOT-2):
+	  Changed config's description for 'pay_command'
+	  Fixed Money Change while locked: Players were able to change the amount of money while locked
+	  Fixed Money added even if cancelled: Now if the action is cancelled, the amount will be set to 0
+	 
+    Need to update languages file: yes
+    Need to update config file: yes
+    Need to update players data: no
+	**/
 	
 	private static Main instance;
 	public FilesManager filesManager;
@@ -40,7 +51,7 @@ public class Main extends JavaPlugin {
 	public UsersManager usersManager;
 	
 	// Number of build
-	public int build = 2;
+	public final int build = 3;
 	
 	ConsoleCommandSender send = getServer().getConsoleSender();
 	

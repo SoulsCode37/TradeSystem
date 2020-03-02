@@ -131,6 +131,16 @@ public class Trade {
 		
 		InventoryHelper.executeTrade(this);
 		
+		// Pay money
+		int senderMoney = getTradeInterface().getSenderMoneyInterface().getMoney();
+		int receiverMoney = getTradeInterface().getReceiverMoneyInterface().getMoney();
+		
+		if(senderMoney > 0)
+			Bukkit.dispatchCommand(getSender().getPlayer(), Settings.PAY_COMMAND.replace("%money%", senderMoney + "").replace("%name%", getReceiver().getPlayer().getName()));
+		if(receiverMoney > 0)
+			Bukkit.dispatchCommand(getReceiver().getPlayer(), Settings.PAY_COMMAND.replace("%money%", receiverMoney + "").replace("%name%", getSender().getPlayer().getName()));
+		
+		
 		receiver.getTradesIn().remove(this);
 		sender.getTradesOut().remove(this);
 		
@@ -163,6 +173,10 @@ public class Trade {
 		
 		sender.getPlayer().sendMessage(Messages.convert("trade_cancelled", true).replace("%name%", who));
 		receiver.getPlayer().sendMessage(Messages.convert("trade_cancelled", true).replace("%name%", who));
+	}
+	
+	public boolean isSender(User user) {
+		return user.equals(getSender());
 	}
 	
 	public User getSender() {

@@ -22,7 +22,14 @@ public class LanguagesFile extends BaseFile {
 		getFile().set("trade_inventory.cancel_item.name", "&c&lCancel trade");
 		getFile().set("trade_inventory.lock_item.name", "&c&lItems Locked");
 		getFile().set("trade_inventory.unlocking_item.name", "&6&lUnlocking items...");
+		getFile().set("trade_inventory.money_item.name", "&6%name%'s money: &e%money%");
 		getFile().set("trade_inventory.slots_full", "&cSlots are full");
+		getFile().set("money_trade_inventory.title", "&6Add money to the trade");
+		getFile().set("money_trade_inventory.confirm_item.name", "&eAdd &6%money% &eto the trade");
+		getFile().set("money_trade_inventory.cancel_item.name", "&cCancel");
+		getFile().set("money_trade_inventory.cannot_remove_money", "&cMoney can't go below 0");
+		getFile().set("money_trade_inventory.money_not_added", "&cNo money added to the trade");
+		getFile().set("money_trade_inventory.money_added", "&aAdded &2%money%&a to the trade");
 		getFile().set("trade_request.received",
 				"&8&l&m+----------------------------+\n"
 				+ "&r\n       &9&l%from% &bwants to trade");

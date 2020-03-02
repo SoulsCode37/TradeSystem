@@ -22,4 +22,6 @@ public class Settings {
 	public final static int COOLDOWN_TIME = c.getInt("Settings.cooldown_player.time");
 	public final static boolean RIGHT_CLICK = c.getBoolean("Settings.right_click_request");
 	public final static List<String> BLACKLISTED_WORLDS = c.getStringList("Settings.blacklisted_worlds");
+	public final static String PAY_COMMAND = c.getString("Settings.pay_command");
+	public final static boolean MONEY_TRADE = c.getBoolean("Settings.money_trade");
 }

@@ -9,7 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.soul.tradesystem.trades.Trade;
+import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
+import me.soul.tradesystem.utils.Settings;
 
 public class TradeInterface {
 
@@ -28,9 +30,13 @@ public class TradeInterface {
               23, 24, 25, 26,
               32, 33, 34, 35
             };
+	private MoneyTradeInterface senderMoneyInterface;
+	private MoneyTradeInterface receiverMoneyInterface;
 	
 	public TradeInterface(Trade trade) {
 		this.trade = trade;
+		this.senderMoneyInterface = new MoneyTradeInterface(this, getTrade().getSender());
+		this.receiverMoneyInterface = new MoneyTradeInterface(this, getTrade().getReceiver());
 	}
 
 	public void createInventory() {
@@ -77,8 +83,43 @@ public class TradeInterface {
 		this.inv.setItem(46, cancel);
 		this.inv.setItem(53, cancel);
 		
+		if(Settings.MONEY_TRADE) {
+			// New money item
+			ItemStack money = new ItemStack(Material.GOLD_INGOT);
+			ItemMeta moneyMeta = money.getItemMeta();
+
+			moneyMeta.setDisplayName(Messages.convert("trade_inventory.money_item.name", false)
+					.replace("%name%", getTrade().getSender().getPlayer().getName()).replace("%money%", 0.0 + ""));
+			money.setItemMeta(moneyMeta);
+
+			this.inv.setItem(47, money);
+
+			moneyMeta.setDisplayName(Messages.convert("trade_inventory.money_item.name", false)
+					.replace("%name%", getTrade().getReceiver().getPlayer().getName()).replace("%money%", 0.0 + ""));
+			money.setItemMeta(moneyMeta);
+
+			this.inv.setItem(51, money);
+		}
+		
 		getTrade().getReceiver().getPlayer().openInventory(inv);
 		getTrade().getSender().getPlayer().openInventory(inv);
+	}
+	
+	// Update and open inventory
+	public void openInterface(User user) {
+		ItemStack money = new ItemStack(Material.GOLD_INGOT);
+		ItemMeta moneyMeta = money.getItemMeta();
+		
+		moneyMeta.setDisplayName(Messages.convert("trade_inventory.money_item.name", false).replace("%name%", getTrade().getSender().getPlayer().getName()).replace("%money%", getSenderMoneyInterface().getMoney() + ""));
+		money.setItemMeta(moneyMeta);
+		
+		this.inv.setItem(47, money);
+		
+		moneyMeta.setDisplayName(Messages.convert("trade_inventory.money_item.name", false).replace("%name%", getTrade().getReceiver().getPlayer().getName()).replace("%money%", getReceiverMoneyInterface().getMoney() + ""));
+		money.setItemMeta(moneyMeta);
+		
+		this.inv.setItem(51, money);
+		user.getPlayer().openInventory(this.inv);
 	}
 	
 	// Lock sender's items
@@ -104,13 +145,11 @@ public class TradeInterface {
 	public void unlockSender() {
 		this.setSenderLocked(false);
 		this.inv.setItem(48, null);
-		this.inv.setItem(47, null);
 	}
 	
 	public void unlockReceiver() {
 		this.setReceiverLocked(false);
 		this.inv.setItem(50, null);
-		this.inv.setItem(51, null);
 	}
 	
 	public void startUnlockingSender() {
@@ -119,7 +158,7 @@ public class TradeInterface {
 		ItemMeta meta = lock.getItemMeta();
 		meta.setDisplayName(Messages.convert("trade_inventory.unlocking_item.name", false));
 		lock.setItemMeta(meta);
-		this.inv.setItem(47, lock);
+		this.inv.setItem(48, lock);
 	}
 	
 	public void startUnlockingReceiver() {
@@ -128,7 +167,7 @@ public class TradeInterface {
 		ItemMeta meta = lock.getItemMeta();
 		meta.setDisplayName(Messages.convert("trade_inventory.unlocking_item.name", false));
 		lock.setItemMeta(meta);
-		this.inv.setItem(51, lock);
+		this.inv.setItem(50, lock);
 	}
 	
 	public Inventory getInv() {
@@ -153,5 +192,21 @@ public class TradeInterface {
 
 	public void setReceiverLocked(boolean receiverLocked) {
 		this.receiverLocked = receiverLocked;
+	}
+
+	public void setReceiverMoneyInterface(MoneyTradeInterface r) {
+		this.receiverMoneyInterface = r;
+	}
+	
+	public MoneyTradeInterface getReceiverMoneyInterface() {
+		return receiverMoneyInterface;
+	}
+	
+	public void setSenderMoneyInterface(MoneyTradeInterface s) {
+		this.senderMoneyInterface = s;
+	}
+	
+	public MoneyTradeInterface getSenderMoneyInterface() {
+		return senderMoneyInterface;
 	}
 }

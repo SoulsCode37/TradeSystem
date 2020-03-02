@@ -33,7 +33,7 @@ public class CTrade implements CommandExecutor {
 			
 			User user = Main.getInstance().usersManager.getUser(player.getName());
 			
-			if(!Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0])) || args[0].equalsIgnoreCase(sender.getName())) {
+			if(!isReallyValid(args[0]) || args[0].equalsIgnoreCase(sender.getName())) {
 				sender.sendMessage(Messages.convert("trade_command.invalid_player", true).replace("%name%", args[0]));
 				return false;
 			}
@@ -41,33 +41,16 @@ public class CTrade implements CommandExecutor {
 			Player in = Bukkit.getPlayer(args[0]);
 			
 			if(user.canSendRequestTo(args[0]))
-//              OLD CODE
-//				User inUser = Main.getInstance().usersManager.getUser(args[0]);
-//				
-//				if(!inUser.hasTrades()) {
-//					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", args[0]));
-//					return false;
-//				}
-//				
-//				if(inUser.getBlacklist().contains(player.getName())) {
-//					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", args[0]));
-//					return false;
-//				}
-//				
-//				if(Settings.COOLDOWN_PLAYER) {
-//					if(!TradesCooldowns.isOnCooldown(player.getName(), args[0])) {
-//						// Send a request which is stored in the TradesQueue class
-//						new Trade(player, in).sendRequest();
-//						TradesCooldowns.cooldown(player.getName(), args[0]);
-//					} else 
-//						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", args[0]));
-//				} else {
-//					// Send a request which is stored in the TradesQueue class
-//					new Trade(player, in).sendRequest();
-//				}
-				
 				user.initializeTrade(in);
 		}
+		return false;
+	}
+	
+	// To avoid a bug: Many users with similiar username caused a nullpointer
+	private boolean isReallyValid(String name) {
+		for(Player p : Bukkit.getOnlinePlayers())
+			if(p.getName().equals(name))
+				return true;
 		return false;
 	}
 

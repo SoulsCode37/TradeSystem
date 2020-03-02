@@ -141,7 +141,7 @@ public class User {
 	}
 	
 	public Player getPlayer() {
-		return this.player;
+		return Bukkit.getPlayer(this.player.getName());
 	}
 
 	public List<Trade> getTradesIn() {
