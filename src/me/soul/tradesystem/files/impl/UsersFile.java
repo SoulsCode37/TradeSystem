@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
+import me.soul.tradesystem.api.customevents.CreateUserEvent;
 import me.soul.tradesystem.files.BaseFile;
 
 public class UsersFile extends BaseFile {
 
 	public UsersFile(String name) throws Exception {
 		super(name, "");
-		this.setup();
-	}
-	
-	private void setup() throws IOException {
-		if(getFile().contains("do:not:touch:this"))
-			return;
-		getFile().set("do:not:touch:this", "default");
-		saveFile();
 	}
 	
 	public boolean existUser(String name) {
@@ -25,6 +20,12 @@ public class UsersFile extends BaseFile {
 	}
 	
 	public void addUser(String name) throws IOException {
+		CreateUserEvent event = new CreateUserEvent(name);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		getFile().set(name + ".created", true);
 		getFile().set(name + ".trades", true);
 		getFile().set(name + ".blacklist", Arrays.asList(""));

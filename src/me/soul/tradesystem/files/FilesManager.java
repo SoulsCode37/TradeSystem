@@ -2,6 +2,7 @@ package me.soul.tradesystem.files;
 
 import me.soul.tradesystem.Main;
 import me.soul.tradesystem.files.impl.LanguagesFile;
+import me.soul.tradesystem.files.impl.SoundsFile;
 import me.soul.tradesystem.files.impl.UsersFile;
 
 public class FilesManager {
@@ -9,6 +10,7 @@ public class FilesManager {
 	
 	private LanguagesFile languages;
 	private UsersFile users;
+	private SoundsFile sounds;
 	
 	public FilesManager() throws Exception {
 		this.setup();
@@ -22,6 +24,7 @@ public class FilesManager {
 		try {
 			languages = new LanguagesFile("languages.yml");
 			users = new UsersFile("users.yml");
+			sounds = new SoundsFile("sounds.yml");
 		} catch (Exception e) {
 			throw new Exception("Could not setup files");
 		}
@@ -33,5 +36,9 @@ public class FilesManager {
 
 	public UsersFile getUsers() {
 		return users;
+	}
+
+	public SoundsFile getSounds() {
+		return sounds;
 	}
 }

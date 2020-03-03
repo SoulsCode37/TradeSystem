@@ -20,6 +20,7 @@ import me.soul.tradesystem.listeners.JoinListener;
 import me.soul.tradesystem.listeners.KickListener;
 import me.soul.tradesystem.listeners.LeftListener;
 import me.soul.tradesystem.listeners.RightClickListener;
+import me.soul.tradesystem.listeners.SoundsListener;
 import me.soul.tradesystem.trades.TradesQueue;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.users.UsersManager;
@@ -27,23 +28,24 @@ import me.soul.tradesystem.utils.Settings;
 
 public class Main extends JavaPlugin {
 
-	/** Build 3 changes:
-	 Fixed Inventory Click bug: Players were not able to trade stained clay and barriers
-	 Fixed Trade command bug: Many users with similiar username caused a null pointer
-	 Fixed Inventory Click bug: Null pointers on click
-	 Reworked InventoryCloseListener.class
-	 Added an optin to add money to the trade
-	 Reworked the Trade Interface
-	 
+	/** 
 	 HotFix Changes (B3-SNAPSHOT-2):
 	  Changed config's description for 'pay_command'
 	  Fixed Money Change while locked: Players were able to change the amount of money while locked
 	  Fixed Money added even if cancelled: Now if the action is cancelled, the amount will be set to 0
+	  
+	 API and Sounds (B3):
+	  Added a simple API for developers, with custom events
+	  Added sounds, with sounds.yml now you can change your trading-sounds
 	 
-    Need to update languages file: yes
-    Need to update config file: yes
-    Need to update players data: no
+	Last update (B3):
+     Need to update languages file: no
+     Need to update config file: yes
+     Need to update players data: no
 	**/
+	
+	//TODO Trades History
+	
 	
 	private static Main instance;
 	public FilesManager filesManager;
@@ -116,6 +118,7 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new KickListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryCloseListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+		getServer().getPluginManager().registerEvents(new SoundsListener(), this);
 	}
 	
 	private void registerCommands() {

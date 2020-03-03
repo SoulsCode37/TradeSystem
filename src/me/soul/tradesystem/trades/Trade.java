@@ -5,6 +5,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.soul.tradesystem.Main;
+import me.soul.tradesystem.api.customevents.TradeAcceptEvent;
+import me.soul.tradesystem.api.customevents.TradeCancelEvent;
+import me.soul.tradesystem.api.customevents.TradeDenyEvent;
+import me.soul.tradesystem.api.customevents.TradeEndEvent;
+import me.soul.tradesystem.api.customevents.TradeExpireEvent;
+import me.soul.tradesystem.api.customevents.TradeSendEvent;
 import me.soul.tradesystem.trades.enums.TradeStatus;
 import me.soul.tradesystem.trades.enums.TradeType;
 import me.soul.tradesystem.trades.game.InventoryHelper;
@@ -38,6 +44,12 @@ public class Trade {
 	
 	// Send trade request
 	public void sendRequest() {
+		TradeSendEvent event = new TradeSendEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.SENT);
 		sender.getPlayer().sendMessage(Messages.convert("trade_request.sent", true).replace("%to%", receiver.getPlayer().getName()));
 		receiver.getPlayer().sendMessage(Messages.convert("trade_request.received", false).replace("%from%", sender.getPlayer().getName()));
@@ -69,6 +81,12 @@ public class Trade {
 	
 	// Expire trade
 	public void expireTrade() {
+		TradeExpireEvent event = new TradeExpireEvent(this);
+	    Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.EXPIRED);
 		stopCountdown();
 		User in = Main.getInstance().usersManager.getUser(inName);
@@ -86,6 +104,12 @@ public class Trade {
 	
 	// Start trade
 	public void startTrading() {
+		TradeAcceptEvent event = new TradeAcceptEvent(this);
+	    Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.ACCEPTED);
 		
 		this.stopCountdown();
@@ -124,6 +148,12 @@ public class Trade {
 			return;
 		}
 		
+		TradeEndEvent event = new TradeEndEvent(this);
+	    Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.FINISHED);
 		
 		sender.getPlayer().getOpenInventory().close();
@@ -150,6 +180,12 @@ public class Trade {
 	
 	// Deny trade request
 	public void denyTrading() {
+		TradeDenyEvent event = new TradeDenyEvent(this);
+	    Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.DENIED);
 
 		this.stopCountdown();
@@ -161,6 +197,12 @@ public class Trade {
 	
 	// Cancel trade request
 	public void cancelTrading(String who) {
+		TradeCancelEvent event = new TradeCancelEvent(this);
+	    Bukkit.getPluginManager().callEvent(event);
+		
+		if(event.isCancelled())
+			return;
+		
 		setStatus(TradeStatus.CANCELLED);
 		
 		sender.getPlayer().getOpenInventory().close();
