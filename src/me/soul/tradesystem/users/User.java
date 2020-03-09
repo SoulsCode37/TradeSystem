@@ -88,7 +88,7 @@ public class User {
 		}
 		
 		// Added check for incoming trades
-		if(inUser.getBlacklist().contains(getPlayer().getName()) && getTrade(TradeType.IN, to) == null) {
+		if(inUser.getBlacklist().contains(getPlayer().getUniqueId().toString()) && getTrade(TradeType.IN, to) == null) {
 			getPlayer().sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", to));
 			return false;
 		}

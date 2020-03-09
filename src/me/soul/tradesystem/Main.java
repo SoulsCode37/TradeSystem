@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.soul.tradesystem.commands.CToggleTrades;
@@ -16,32 +17,36 @@ import me.soul.tradesystem.commands.CTradesBlacklist;
 import me.soul.tradesystem.files.FilesManager;
 import me.soul.tradesystem.listeners.InventoryClickListener;
 import me.soul.tradesystem.listeners.InventoryCloseListener;
-import me.soul.tradesystem.listeners.JoinListener;
 import me.soul.tradesystem.listeners.KickListener;
 import me.soul.tradesystem.listeners.LeftListener;
 import me.soul.tradesystem.listeners.RightClickListener;
 import me.soul.tradesystem.listeners.SoundsListener;
 import me.soul.tradesystem.trades.TradesQueue;
-import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.users.UsersManager;
 import me.soul.tradesystem.utils.Settings;
+import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin {
 
 	/** 
-	 HotFix Changes (B3-SNAPSHOT-2):
-	  Changed config's description for 'pay_command'
-	  Fixed Money Change while locked: Players were able to change the amount of money while locked
-	  Fixed Money added even if cancelled: Now if the action is cancelled, the amount will be set to 0
-	  
-	 API and Sounds (B3):
-	  Added a simple API for developers, with custom events
-	  Added sounds, with sounds.yml now you can change your trading-sounds
-	 
-	Last update (B3):
-     Need to update languages file: no
-     Need to update config file: yes
-     Need to update players data: no
+	 * B4-SNAPSHOT update:
+	 * Fixed InventoryClose null pointer
+	 * Fixed PlayerQuit null pointer (Need more tests, please let me know) - Suggested by: @Ask3r and @Luiz_Wenner
+	 * Fixed wrong Sound name TRADE_SEND was TRADE_SENT
+	 * Added AntiScam timer, with 'animation' - Suggested by: @blaukat and @xdDirti
+	 * Increased 1.15 silent cooldown
+	 * Switch from Names to UUID for blacklist command - Suggested by: @haeiven (Github)
+	 * Added automatic languages file update
+	 * Optimized code - Suggested by: @haeiven (Github)
+	 * Vault compability - Suggested by: @haeiven (Github)
+	 * Trade Items filter - Suggested by: @Choubatsu
+	 *  New file: filters.yml
+	 *  3 way to filter:
+	 *   name: Displayname check // Need test
+	 *   lore: Per-line lore check // Need test
+	 *   type: Material name check // Working
+	 * 
+	 * Warning! Need config update!
 	**/
 	
 	//TODO Trades History
@@ -51,9 +56,10 @@ public class Main extends JavaPlugin {
 	public FilesManager filesManager;
 	public TradesQueue tradesQueue;
 	public UsersManager usersManager;
+	public Economy vaultEconomy;
 	
 	// Number of build
-	public final int build = 3;
+	public final int build = 4;
 	
 	ConsoleCommandSender send = getServer().getConsoleSender();
 	
@@ -72,14 +78,22 @@ public class Main extends JavaPlugin {
 		tradesQueue = new TradesQueue();
 		usersManager = new UsersManager();
 		
+		saveDefaultConfig();
+		
 		send.sendMessage("§a> Loading listeners...");
 		this.registerListeners();
 		send.sendMessage("§a> Loading commands...");
 		this.registerCommands();
-		
-		saveDefaultConfig();
-		
-		reload();
+	
+		// Setup Vault as in the example on the GitHub page
+		if(Settings.USE_VAULT) {
+			if(!setupVaultEconomy()) {
+				send.sendMessage("§cVault dependency not found, plugin disabled");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			} else
+				send.sendMessage("§a> Vault hooked");
+		}
 		
 		send.sendMessage("§aTradeSystem has been enabled B" + this.build);
 	}
@@ -95,16 +109,6 @@ public class Main extends JavaPlugin {
 
 		send.sendMessage("§eTradeSystem has been disabled");
 	}
-
-	public void reload() {
-		if(Bukkit.getOnlinePlayers().isEmpty())
-			return;
-		
-		debug("Reloading users...");
-		
-		for(Player p : Bukkit.getOnlinePlayers())
-			usersManager.addUser(new User(p.getName()));
-	}
 	
 	public void debug(String msg) {
 		if(Settings.DEBUG)
@@ -113,7 +117,8 @@ public class Main extends JavaPlugin {
 	
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(new RightClickListener(), this);
-		getServer().getPluginManager().registerEvents(new JoinListener(), this);
+		// Not used anymore
+		// getServer().getPluginManager().registerEvents(new JoinListener(), this);
 		getServer().getPluginManager().registerEvents(new LeftListener(), this);
 		getServer().getPluginManager().registerEvents(new KickListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryCloseListener(), this);
@@ -130,6 +135,20 @@ public class Main extends JavaPlugin {
 		getCommand("tblacklist").setExecutor(new CTradesBlacklist());
 	}
 	
+    private boolean setupVaultEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null)
+            return false;
+
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        
+        if (rsp == null)
+            return false;
+        
+        vaultEconomy = rsp.getProvider();
+        
+        return vaultEconomy != null;
+    }
+    
 	public static Main getInstance() {
 		return instance;
 	}

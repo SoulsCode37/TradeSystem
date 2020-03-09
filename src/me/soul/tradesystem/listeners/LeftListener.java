@@ -15,11 +15,14 @@ public class LeftListener implements Listener {
 	public void onLeft(PlayerQuitEvent event) {
 		User user = Main.getInstance().usersManager.getUser(event.getPlayer().getName());
 		try {
-			user.end();
-			Main.getInstance().debug("Saved user profile '" + event.getPlayer().getName() + "'");
-			
 			// Prevent memory leaks
 			Main.getInstance().usersManager.removeUser(user);
+			
+			if(user != null) {
+				user.end();
+				Main.getInstance().debug("Saved user profile '" + event.getPlayer().getName() + "'");
+			} else
+				Main.getInstance().debug("Could not end profile for user '" + event.getPlayer().getName() + "'");
 		} catch (IOException e) {
 			Main.getInstance().debug("Could not end profile for user '" + event.getPlayer().getName() + "'");
 		}

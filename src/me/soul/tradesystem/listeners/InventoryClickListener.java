@@ -11,6 +11,7 @@ import me.soul.tradesystem.Main;
 import me.soul.tradesystem.trades.Trade;
 import me.soul.tradesystem.trades.TradeItem;
 import me.soul.tradesystem.trades.game.InventoryHelper;
+import me.soul.tradesystem.trades.game.ItemFilter;
 import me.soul.tradesystem.trades.game.MoneyTradeInterface;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
@@ -39,7 +40,7 @@ public class InventoryClickListener implements Listener {
 		ItemStack item = event.getCurrentItem();
 
 		
-		boolean isSender = user == trade.getSender();
+		boolean isSender = trade.isSender(user);
 		
 		switch(item.getType()) {
 		case STAINED_CLAY:
@@ -51,7 +52,7 @@ public class InventoryClickListener implements Listener {
 					trade.getTradeInterface().lockReceiver();
 				
 				if(trade.getTradeInterface().isSenderLocked() && trade.getTradeInterface().isReceiverLocked())
-					trade.endTrading();
+					trade.getTradeInterface().startAntiScamTimer();
 				break;
 			case 14:
 				trade.cancelTrading(event.getWhoClicked().getName());
@@ -128,6 +129,19 @@ public class InventoryClickListener implements Listener {
 		if(user == null || trade == null || trade.getTradeInterface() == null)
 			return;
 		
+		// Check if item can be traded
+		ItemFilter filteredItem = new ItemFilter(item);
+		
+		try {
+			if(!filteredItem.canBeTraded()) {
+				user.getPlayer().sendMessage(Messages.convert("trade_inventory.invalid_item", true));
+				return;
+			}
+		} catch (Exception e) {
+			Main.getInstance().debug("Wrong Material name in filters.yml (Source: " + e.getMessage() + ")");
+			return;
+		}
+		
 		int[] usedSlots = user == trade.getSender() ? trade.getTradeInterface().senderSlots : trade.getTradeInterface().receiverSlots;
 		
 		if (!event.getClickedInventory().equals(user.getPlayer().getInventory())) {
@@ -179,6 +193,11 @@ public class InventoryClickListener implements Listener {
 			switch(item.getDurability()) {
 			// Confirm
 			case 4:	
+				if(Settings.USE_VAULT && !mi.hasEnoughMoney()) {
+					user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.vault.not_enough_money", true).replace("%money%", mi.getMoney() + ""));
+					return;
+				}
+				
 				trade.getTradeInterface().openInterface(user);
 				user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.money_added", true).replace("%money%", mi.getMoney() + ""));
 				break;

@@ -128,26 +128,42 @@ public class Trade {
 		getTradeInterface().createInventory();
 	}
 	
-	// Finish trade
-	public void endTrading() {
+	// Anti Scam timer of 3 seconds
+	public boolean antiscamTimer() {
 		if(!InventoryHelper.hasEnoughSpace(sender.getPlayer(), InventoryHelper.getNumberOfItems(getTradeInterface().getInv(), getTradeInterface().receiverSlots))) {
 			sender.getPlayer().sendMessage(Messages.convert("not_enough_space", true).replace("%name%", sender.getPlayer().getName()));
 			receiver.getPlayer().sendMessage(Messages.convert("not_enough_space", true).replace("%name%", sender.getPlayer().getName()));
-			return;
+			getTradeInterface().resetTrade();
+			return false;
 		}
 		
 		if(!InventoryHelper.hasEnoughSpace(receiver.getPlayer(), InventoryHelper.getNumberOfItems(getTradeInterface().getInv(), getTradeInterface().senderSlots))) {
 			sender.getPlayer().sendMessage(Messages.convert("not_enough_space", true).replace("%name%", receiver.getPlayer().getName()));
 			receiver.getPlayer().sendMessage(Messages.convert("not_enough_space", true).replace("%name%", receiver.getPlayer().getName()));
-			return;
+			getTradeInterface().resetTrade();
+			return false;
 		}
 		
 		if(InventoryHelper.isTradeInventoryEmpty(getTradeInterface())) {
 			sender.getPlayer().sendMessage(Messages.convert("inventories_empty", true));
 			receiver.getPlayer().sendMessage(Messages.convert("inventories_empty", true));
-			return;
+			getTradeInterface().resetTrade();
+			return false;
 		}
 		
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				if(getStatus().equals(TradeStatus.ACCEPTED))
+					endTrading();
+			}
+		}, 20 * 3);
+		return true;
+	}
+	
+	// Finish trade
+	public void endTrading() {
 		TradeEndEvent event = new TradeEndEvent(this);
 	    Bukkit.getPluginManager().callEvent(event);
 		
@@ -165,11 +181,15 @@ public class Trade {
 		int senderMoney = getTradeInterface().getSenderMoneyInterface().getMoney();
 		int receiverMoney = getTradeInterface().getReceiverMoneyInterface().getMoney();
 		
-		if(senderMoney > 0)
-			Bukkit.dispatchCommand(getSender().getPlayer(), Settings.PAY_COMMAND.replace("%money%", senderMoney + "").replace("%name%", getReceiver().getPlayer().getName()));
-		if(receiverMoney > 0)
-			Bukkit.dispatchCommand(getReceiver().getPlayer(), Settings.PAY_COMMAND.replace("%money%", receiverMoney + "").replace("%name%", getSender().getPlayer().getName()));
+		String rName = getReceiver().getPlayer().getName();
+		String sName = getSender().getPlayer().getName();
 		
+		if (senderMoney > 0)
+			Bukkit.dispatchCommand(getSender().getPlayer(),
+					Settings.PAY_COMMAND.replace("%money%", senderMoney + "").replace("%name%", rName));
+		if (receiverMoney > 0)
+			Bukkit.dispatchCommand(getReceiver().getPlayer(),
+					Settings.PAY_COMMAND.replace("%money%", receiverMoney + "").replace("%name%", sName));
 		
 		receiver.getTradesIn().remove(this);
 		sender.getTradesOut().remove(this);

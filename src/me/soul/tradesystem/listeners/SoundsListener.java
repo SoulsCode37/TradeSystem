@@ -27,7 +27,7 @@ public class SoundsListener implements Listener {
 		// Receiver
 		Player receiver = trade.getReceiver().getPlayer();
 		
-		sender.playSound(sender.getLocation(), Sounds.convert("TRADE_SEND"), Settings.SOUNDS_INTENSITY, 1);
+		sender.playSound(sender.getLocation(), Sounds.convert("TRADE_SENT"), Settings.SOUNDS_INTENSITY, 1);
 		receiver.playSound(receiver.getLocation(), Sounds.convert("TRADE_ARRIVE"), Settings.SOUNDS_INTENSITY, 1);
 	}
 	

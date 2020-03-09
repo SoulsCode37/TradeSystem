@@ -1,7 +1,7 @@
 package me.soul.tradesystem.files.impl;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -28,7 +28,7 @@ public class UsersFile extends BaseFile {
 		
 		getFile().set(name + ".created", true);
 		getFile().set(name + ".trades", true);
-		getFile().set(name + ".blacklist", Arrays.asList(""));
+		getFile().set(name + ".blacklist", new ArrayList<>());
 		saveFile();
 	}
 	

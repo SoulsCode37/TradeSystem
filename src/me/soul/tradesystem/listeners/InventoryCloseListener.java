@@ -28,8 +28,14 @@ public class InventoryCloseListener implements Listener {
 			// Added a delay to check if the player was adding money
 			Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
 				
+				@SuppressWarnings("unused")
 				@Override
 				public void run() {
+					if(user == null) {
+						trade.cancelTrading(event.getPlayer().getName());
+						return;
+					}
+					
 					if(!isAddingMoney(user.getPlayer()))
 						trade.cancelTrading(event.getPlayer().getName());
 				}

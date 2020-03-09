@@ -47,31 +47,6 @@ public class RightClickListener implements Listener {
 			silentCooldown(player.getName());
 			
 			if(out.canSendRequestTo(clicked.getName()) && !out.hasRequestFrom(clicked.getName()))
-//              OLD CODE
-//				User inUser = Main.getInstance().usersManager.getUser(clicked.getName());
-//				
-//				if(!inUser.hasTrades()) {
-//					player.sendMessage(Messages.convert("trade_command.trades_off", true).replace("%name%", clicked.getName()));
-//					return;
-//				}
-//				
-//				if(inUser.getBlacklist().contains(player.getName())) {
-//					player.sendMessage(Messages.convert("trade_request_denied.sender", true).replace("%to%", clicked.getName()));
-//					return;
-//				}
-//				
-//				if(Settings.COOLDOWN_PLAYER) {
-//					if(!TradesCooldowns.isOnCooldown(player.getName(), clicked.getName())) {
-//						// Send a request which is stored in the TradesQueue class
-//						new Trade(player, clicked).sendRequest();
-//						TradesCooldowns.cooldown(player.getName(), clicked.getName());
-//					} else
-//						player.sendMessage(Messages.convert("premium.on_cooldown", true).replace("%name%", clicked.getName()));
-//				} else {
-//					// Send a request which is stored in the TradesQueue class
-//					new Trade(player, clicked).sendRequest();
-//				}
-				
 				out.initializeTrade(clicked);
 			else if(out.hasRequestFrom(clicked.getName())) {
 				Trade trade = out.getTrade(TradeType.IN, clicked.getName());
@@ -89,7 +64,7 @@ public class RightClickListener implements Listener {
 			public void run() {
 				silentCooldown.remove(name);
 			}
-		}, 1);
+		}, 2);
 	}
 	
 	private boolean isCooldown(String name) {

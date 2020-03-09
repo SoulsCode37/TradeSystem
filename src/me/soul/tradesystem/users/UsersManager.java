@@ -11,22 +11,34 @@ public class UsersManager {
 	// Local user array
 	private List<User> users = new ArrayList<>();
 	
-	public void addUser(User u) {
-		if(getUser(u.getPlayer().getName()) == null)
-			users.add(u);
-		u.setup();
+	public User addUser(User u) {
+		String name = u.getPlayer().getName();
 		
+		if(!Main.getInstance().filesManager.getUsers().existUser(name)) {
+			try {
+				// Add user in file data
+				Main.getInstance().filesManager.getUsers().addUser(name);
+				Main.getInstance().debug("Created new user profile '" + name + "'");
+			} catch (IOException e) {
+				Main.getInstance().debug("Could not create new user profile '" + name + "'");
+			}
+		}
+		
+		users.add(u);
+		u.setup();
 		Main.getInstance().debug("Loaded user profile '" + u.getPlayer().getName() + "'");
+		
+		return u;
 	}
 	
 	public void removeUser(User u) throws IOException {
 		users.remove(u);
 	}
 	
-	public User getUser(String name) {
+	public User getUser(String name) {		
 		for(User u : users)
 			if(u.getPlayer().getName().equals(name))
 				return u;
-		return null;
+		return addUser(new User(name));
 	}
 }

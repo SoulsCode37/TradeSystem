@@ -1,5 +1,6 @@
 package me.soul.tradesystem.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,16 +33,17 @@ public class CTradesBlacklist implements CommandExecutor {
 			User user = Main.getInstance().usersManager.getUser(sender.getName());
 			String action = args[0];
 			String target = args[1];
+			String id = Bukkit.getPlayer(target).getUniqueId().toString();
 			
 			switch(action.toLowerCase()) {
 			case "add":
-				if(!user.getBlacklist().contains(target))
-					user.getBlacklist().add(target);
+				if(!user.getBlacklist().contains(id))
+					user.getBlacklist().add(id);
 				sender.sendMessage(Messages.convert("blacklist_command.blacklisted", true).replace("%name%", target));
 				break;
 			case "remove":
-				if(user.getBlacklist().contains(target)) 
-					user.getBlacklist().remove(target);
+				if(user.getBlacklist().contains(id)) 
+					user.getBlacklist().remove(id);
 				sender.sendMessage(Messages.convert("blacklist_command.unblacklisted", true).replace("%name%", target));
 				break;
 			}

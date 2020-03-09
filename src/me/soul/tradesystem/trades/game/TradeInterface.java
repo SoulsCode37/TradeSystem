@@ -7,7 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.soul.tradesystem.Main;
 import me.soul.tradesystem.trades.Trade;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
@@ -151,6 +153,39 @@ public class TradeInterface {
 		this.setReceiverLocked(false);
 		this.inv.setItem(50, null);
 	}
+	
+	public void resetTrade() {
+		this.unlockReceiver();
+		this.unlockSender();
+	}
+	
+	public void startAntiScamTimer() {
+		if(!getTrade().antiscamTimer())
+			return;
+		
+		ItemStack as = new ItemStack(Material.STAINED_CLAY);
+		as.setAmount(3);
+		as.setDurability((short)3);
+		ItemMeta meta = as.getItemMeta();
+		meta.setDisplayName(Messages.convert("trade_inventory.end_trading_item.name", false).replace("%seconds%", as.getAmount() + ""));
+		as.setItemMeta(meta);
+		this.inv.setItem(49, as);
+		
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				if(inv.getItem(49).getAmount() <= 1)
+					this.cancel();
+				
+				as.setAmount(as.getAmount() - 1);
+				meta.setDisplayName(Messages.convert("trade_inventory.end_trading_item.name", false).replace("%seconds%", as.getAmount() + ""));
+				as.setItemMeta(meta);
+				inv.setItem(49, as);
+			}
+		}.runTaskTimer(Main.getInstance(), 20, 20);
+	}
+	
 	
 	public void startUnlockingSender() {
 		ItemStack lock = new ItemStack(Material.STAINED_CLAY);

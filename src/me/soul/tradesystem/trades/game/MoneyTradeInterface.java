@@ -6,6 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.soul.tradesystem.Main;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
 
@@ -101,6 +102,11 @@ public class MoneyTradeInterface {
 		this.inv.setItem(22, cancel);
 		
 		getWho().getPlayer().openInventory(this.inv);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public boolean hasEnoughMoney() {
+		return Main.getInstance().vaultEconomy.getBalance(who.getPlayer().getName()) >= getMoney();
 	}
 	
 	public boolean canRemoveMoney(int amount) {
