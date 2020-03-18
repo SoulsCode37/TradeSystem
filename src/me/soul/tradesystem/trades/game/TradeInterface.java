@@ -10,11 +10,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.soul.tradesystem.Main;
+import me.soul.tradesystem.reflections.XMaterial;
 import me.soul.tradesystem.trades.Trade;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
 import me.soul.tradesystem.utils.Settings;
 
+@SuppressWarnings("deprecation")
 public class TradeInterface {
 
 	private Inventory inv;
@@ -44,7 +46,7 @@ public class TradeInterface {
 	public void createInventory() {
 		this.inv = Bukkit.createInventory(null, 54, Messages.convert("trade_inventory.title", false));
 		
-		ItemStack panel = new ItemStack(Material.STAINED_GLASS_PANE);
+		ItemStack panel = XMaterial.GRAY_STAINED_GLASS_PANE.parseItem();
 		ItemMeta panelMeta = panel.getItemMeta();
 		panelMeta.setLore(Arrays.asList("§r"));
 	
@@ -67,7 +69,7 @@ public class TradeInterface {
 		for(int j = 4; j < 50; j += 9)
 			this.inv.setItem(j, panel);
 
-		ItemStack accept = new ItemStack(Material.STAINED_CLAY);
+		ItemStack accept = XMaterial.LIME_TERRACOTTA.parseItem();
 		accept.setDurability((short)5);
 		ItemMeta acceptMeta = accept.getItemMeta();
 		acceptMeta.setDisplayName(Messages.convert("trade_inventory.accept_item.name", false));
@@ -76,7 +78,7 @@ public class TradeInterface {
 		this.inv.setItem(45, accept);
 		this.inv.setItem(52, accept);
 		
-		ItemStack cancel = new ItemStack(Material.STAINED_CLAY);
+		ItemStack cancel = XMaterial.RED_TERRACOTTA.parseItem();
 		cancel.setDurability((short)14);
 		ItemMeta cancelMeta = cancel.getItemMeta();
 		cancelMeta.setDisplayName(Messages.convert("trade_inventory.cancel_item.name", false));
@@ -157,13 +159,14 @@ public class TradeInterface {
 	public void resetTrade() {
 		this.unlockReceiver();
 		this.unlockSender();
+		this.inv.setItem(49, null);
 	}
 	
 	public void startAntiScamTimer() {
 		if(!getTrade().antiscamTimer())
 			return;
 		
-		ItemStack as = new ItemStack(Material.STAINED_CLAY);
+		ItemStack as = XMaterial.LIGHT_BLUE_TERRACOTTA.parseItem();
 		as.setAmount(3);
 		as.setDurability((short)3);
 		ItemMeta meta = as.getItemMeta();
@@ -188,7 +191,7 @@ public class TradeInterface {
 	
 	
 	public void startUnlockingSender() {
-		ItemStack lock = new ItemStack(Material.STAINED_CLAY);
+		ItemStack lock = XMaterial.YELLOW_TERRACOTTA.parseItem();
 		lock.setDurability((short)4);
 		ItemMeta meta = lock.getItemMeta();
 		meta.setDisplayName(Messages.convert("trade_inventory.unlocking_item.name", false));
@@ -197,7 +200,7 @@ public class TradeInterface {
 	}
 	
 	public void startUnlockingReceiver() {
-		ItemStack lock = new ItemStack(Material.STAINED_CLAY);
+		ItemStack lock = XMaterial.YELLOW_TERRACOTTA.parseItem();
 		lock.setDurability((short)4);
 		ItemMeta meta = lock.getItemMeta();
 		meta.setDisplayName(Messages.convert("trade_inventory.unlocking_item.name", false));

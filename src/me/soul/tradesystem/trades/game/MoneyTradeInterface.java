@@ -1,15 +1,18 @@
 package me.soul.tradesystem.trades.game;
 
 import org.bukkit.Bukkit;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.soul.tradesystem.Main;
+import me.soul.tradesystem.reflections.XMaterial;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
 
+@SuppressWarnings("deprecation")
 public class MoneyTradeInterface {
 	
 	private Inventory inv;
@@ -27,7 +30,7 @@ public class MoneyTradeInterface {
 		this.inv = Bukkit.createInventory(null, 27,  Messages.convert("money_trade_inventory.title", false));
 		
 		// Add money item
-		ItemStack add = new ItemStack(Material.STAINED_CLAY);
+		ItemStack add = XMaterial.LIME_TERRACOTTA.parseItem();
 		add.setDurability((short)5);
 		ItemMeta addMeta = add.getItemMeta();
 		
@@ -56,7 +59,7 @@ public class MoneyTradeInterface {
 		this.inv.setItem(11, add);
 		
 		// Remove money item
-		ItemStack remove = new ItemStack(Material.STAINED_CLAY);
+		ItemStack remove = XMaterial.RED_TERRACOTTA.parseItem();
 		remove.setDurability((short)14);
 		ItemMeta removeMeta = remove.getItemMeta();
 		
@@ -85,7 +88,7 @@ public class MoneyTradeInterface {
 		this.inv.setItem(17, remove);
 		
 		// Confirm item
-		ItemStack confirm = new ItemStack(Material.STAINED_CLAY);
+		ItemStack confirm = XMaterial.YELLOW_TERRACOTTA.parseItem();
 		confirm.setDurability((short)4);
 		ItemMeta confirmMeta = confirm.getItemMeta();
 		confirmMeta.setDisplayName(Messages.convert("money_trade_inventory.confirm_item.name", false).replace("%money%", getMoney() + ""));
@@ -104,7 +107,7 @@ public class MoneyTradeInterface {
 		getWho().getPlayer().openInventory(this.inv);
 	}
 	
-	@SuppressWarnings("deprecation")
+
 	public boolean hasEnoughMoney() {
 		return Main.getInstance().vaultEconomy.getBalance(who.getPlayer().getName()) >= getMoney();
 	}

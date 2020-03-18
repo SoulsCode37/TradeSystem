@@ -12,7 +12,7 @@ public class UsersManager {
 	private List<User> users = new ArrayList<>();
 	
 	public User addUser(User u) {
-		String name = u.getPlayer().getName();
+		String name = u.getPlayer().getUniqueId().toString();
 		
 		if(!Main.getInstance().filesManager.getUsers().existUser(name)) {
 			try {

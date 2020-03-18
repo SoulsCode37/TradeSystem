@@ -60,6 +60,7 @@ public class LanguagesFile extends BaseFile {
 		languages.put("trade_completed", "&aTrade successfully completed");
 		languages.put("trade_command.syntax", "&cInvalid syntax, use /trade <player>");
 		languages.put("trade_command.invalid_player", "&cPlayer offline or does not exist or is invalid");
+		languages.put("trade_command.player_too_far", "&4&l%name%&c is too far away!");
 		languages.put("trade_command.invalid_world", "&cTrades are disabled in your or in &4&l%name%&c's world");
 		languages.put("trade_command.different_worlds", "&cYou and &4&l%name%&c are not on the same world");
 		languages.put("trade_deny_command.syntax", "&cInvalid syntax, use /tradedeny <player>");
@@ -70,8 +71,14 @@ public class LanguagesFile extends BaseFile {
 		languages.put("inventories_empty", "&cBoth inventories are empty");
 		languages.put("on_cooldown", "&cSorry, your trade requests with &4&l%name%&c are on cooldown");
 		languages.put("blacklist_command.syntax", "&cInvalid syntax, use /tblacklist <add/remove> <player>");
-		languages.put("blacklist_command.blacklisted", "&cYou wont receive any trade request from &4&l%name%");
+		languages.put("blacklist_command.blacklisted", "&aYou wont receive any trade request from &4&l%name%");
+		languages.put("blacklist_command.already_blacklisted", "&cYou have already blacklisted &4&l%name%");
 		languages.put("blacklist_command.unblacklisted", "&aYou will receive trade requests from &2&l%name%");
+		languages.put("blacklist_command.not_blacklisted", "&4&l%name% is not blacklisted");
+		languages.put("spectate_trade_command.syntax", "&cInvalid syntax, use /spectatetrade <player>");
+		languages.put("spectate_trade_command.not_trading", "&4%name%&c is not trading");
+		languages.put("spectate_trade_command.spectating", "&aSpectating &2&l%sender%&a -> &2&l%receiver%&a trade");
+		languages.put("spectate_trade_command.stop_spectating", "&cNo longer spectating the trade");
 		
 		if(getFile().contains("do:not:touch:this"))
 			return;

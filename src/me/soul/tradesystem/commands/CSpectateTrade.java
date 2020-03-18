@@ -10,59 +10,49 @@ import me.soul.tradesystem.Main;
 import me.soul.tradesystem.users.User;
 import me.soul.tradesystem.utils.Messages;
 import me.soul.tradesystem.utils.Permissions;
-import me.soul.tradesystem.utils.Settings;
-
-public class CTrade implements CommandExecutor {
+public class CSpectateTrade implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
-		if(lbl.equalsIgnoreCase("trade")) {
-			if(args.length < 1) {
-				sender.sendMessage(Messages.convert("trade_command.syntax", true));
-				return false;
-			}
-			
+		if(lbl.equalsIgnoreCase("spectatetrade")) {
 			if(!(sender instanceof Player))
 				return false;
 			
-			Player player = (Player)sender;
+			Player p = (Player)sender;
 			
-			if(!player.hasPermission(Permissions.TRADE)) {
+			if(!p.hasPermission(Permissions.SPECTATE_TRADE_COMMAND)) {
 				sender.sendMessage(Messages.convert("no_permission", true));
 				return false;
 			}
 			
-			User user = Main.getInstance().usersManager.getUser(player.getName());
+			if(args.length < 1) {
+				sender.sendMessage(Messages.convert("spectate_trade_command.syntax", true));
+				return false;
+			}
 			
 			if(!isReallyValid(args[0]) || args[0].equalsIgnoreCase(sender.getName())) {
 				sender.sendMessage(Messages.convert("trade_command.invalid_player", true).replace("%name%", args[0]));
 				return false;
 			}
 			
-			Player in = Bukkit.getPlayer(args[0]);
+			User target = Main.getInstance().usersManager.getUser(args[0]);
+			User pl = Main.getInstance().usersManager.getUser(p.getName());
 			
-			if(!isInRange(player, in)) {
-				sender.sendMessage(Messages.convert("trade_command.player_too_far", true).replace("%name%", args[0]));
+			if(target.getCurrentTrade() == null) {
+				sender.sendMessage(Messages.convert("spectate_trade_command.not_trading", true).replace("%name%", args[0]));
 				return false;
 			}
 			
-			if(user.canSendRequestTo(args[0]))
-				user.initializeTrade(in);
+			pl.spectateTrade(target.getCurrentTrade());
+			
 		}
 		return false;
 	}
 	
-	// To avoid a bug: Many users with similiar username caused a nullpointer
 	private boolean isReallyValid(String name) {
 		for(Player p : Bukkit.getOnlinePlayers())
 			if(p.getName().equals(name))
 				return true;
 		return false;
-	}
-
-	private boolean isInRange(Player player, Player target) {
-		if(Settings.MAX_TRADE_DISTANCE != -1)
-			return player.getLocation().distance(target.getLocation()) < Settings.MAX_TRADE_DISTANCE;
-		return true;
 	}
 }

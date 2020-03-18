@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.soul.tradesystem.Main;
+import me.soul.tradesystem.reflections.XMaterial;
 import me.soul.tradesystem.trades.Trade;
 import me.soul.tradesystem.trades.TradeItem;
 import me.soul.tradesystem.trades.game.InventoryHelper;
@@ -38,28 +39,22 @@ public class InventoryClickListener implements Listener {
 			return;
 		
 		ItemStack item = event.getCurrentItem();
-
+		XMaterial xmat = XMaterial.matchXMaterial(item);
 		
 		boolean isSender = trade.isSender(user);
 		
-		switch(item.getType()) {
-		case STAINED_CLAY:
-			switch(item.getDurability()) {
-			case 5:
-				if(isSender)
-					trade.getTradeInterface().lockSender();
-				else
-					trade.getTradeInterface().lockReceiver();
-				
-				if(trade.getTradeInterface().isSenderLocked() && trade.getTradeInterface().isReceiverLocked())
-					trade.getTradeInterface().startAntiScamTimer();
-				break;
-			case 14:
-				trade.cancelTrading(event.getWhoClicked().getName());
-				break;
-			default:
-				break;
-			}
+		switch(xmat) {
+		case RED_GLAZED_TERRACOTTA:
+			trade.cancelTrading(event.getWhoClicked().getName());
+			break;
+		case LIME_GLAZED_TERRACOTTA:
+			if(isSender)
+				trade.getTradeInterface().lockSender();
+			else
+				trade.getTradeInterface().lockReceiver();
+			
+			if(trade.getTradeInterface().isSenderLocked() && trade.getTradeInterface().isReceiverLocked())
+				trade.getTradeInterface().startAntiScamTimer();
 			break;
 		case BARRIER:
 			if((isSender && !trade.getTradeInterface().isSenderLocked()) || (!isSender && !trade.getTradeInterface().isReceiverLocked()))
@@ -186,42 +181,34 @@ public class InventoryClickListener implements Listener {
 		MoneyTradeInterface mi = isSender ? trade.getTradeInterface().getSenderMoneyInterface() : trade.getTradeInterface().getReceiverMoneyInterface();
 		
 		ItemStack item = event.getCurrentItem();
+		XMaterial xmat = XMaterial.matchXMaterial(item);
+		String name = item.getItemMeta().getDisplayName();
 		
-		switch(item.getType()) {
-		case STAINED_CLAY:
-			String name = item.getItemMeta().getDisplayName();
-			switch(item.getDurability()) {
-			// Confirm
-			case 4:	
-				if(Settings.USE_VAULT && !mi.hasEnoughMoney()) {
-					user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.vault.not_enough_money", true).replace("%money%", mi.getMoney() + ""));
-					return;
-				}
-				
-				trade.getTradeInterface().openInterface(user);
-				user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.money_added", true).replace("%money%", mi.getMoney() + ""));
-				break;
-			// Add
-			case 5:
-				String toAdd = name.replace("§a+", "");
-				int add = Integer.parseInt(toAdd);
-				mi.setMoney(mi.getMoney() + add);
-				mi.openInterface();
-				break;
-			// Remove
-			case 14:
-				String toRemove = name.replace("§c-", "");
-				int remove = Integer.parseInt(toRemove);
-				
-				if(mi.canRemoveMoney(remove)) {
-					mi.setMoney(mi.getMoney() - remove);
-					mi.openInterface();
-				} else 
-					user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.cannot_remove_money", true));
-				break;
-			default:
-				break;
+		switch(xmat) {
+		case YELLOW_GLAZED_TERRACOTTA:
+			if(Settings.USE_VAULT && !mi.hasEnoughMoney()) {
+				user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.vault.not_enough_money", true).replace("%money%", mi.getMoney() + ""));
+				return;
 			}
+			
+			trade.getTradeInterface().openInterface(user);
+			user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.money_added", true).replace("%money%", mi.getMoney() + ""));
+			break;
+		case RED_GLAZED_TERRACOTTA:
+			String toRemove = name.replace("§c-", "");
+			int remove = Integer.parseInt(toRemove);
+			
+			if(mi.canRemoveMoney(remove)) {
+				mi.setMoney(mi.getMoney() - remove);
+				mi.openInterface();
+			} else 
+				user.getPlayer().sendMessage(Messages.convert("money_trade_inventory.cannot_remove_money", true));
+			break;
+		case LIME_GLAZED_TERRACOTTA:
+			String toAdd = name.replace("§a+", "");
+			int add = Integer.parseInt(toAdd);
+			mi.setMoney(mi.getMoney() + add);
+			mi.openInterface();
 			break;
 		// Cancel
 		case BARRIER:

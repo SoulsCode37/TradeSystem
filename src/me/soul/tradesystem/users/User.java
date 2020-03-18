@@ -25,6 +25,7 @@ public class User {
 	private List<ItemStack> tradingItems = new ArrayList<>();
 	private List<String> blacklist = new ArrayList<>();
 	private boolean trades;
+	private Trade spectatedTrade;
 	
 	public User(String in) {
 		this.player = Bukkit.getPlayer(in);
@@ -32,8 +33,8 @@ public class User {
 
 	// Retrive user settings
 	public void setup() {
-		this.trades = Main.getInstance().filesManager.getUsers().hasTrades(getPlayer().getName());
-		this.blacklist = Main.getInstance().filesManager.getUsers().getBlackList(getPlayer().getName());
+		this.trades = Main.getInstance().filesManager.getUsers().hasTrades(getPlayer().getUniqueId().toString());
+		this.blacklist = Main.getInstance().filesManager.getUsers().getBlackList(getPlayer().getUniqueId().toString());
 	}
 	
 	// Save user settings to files
@@ -44,8 +45,8 @@ public class User {
 		for(int i = 0; i < getTradesIn().size(); i++)
 			getTradesIn().get(i).expireTrade();
 		
-		Main.getInstance().filesManager.getUsers().setTrades(getPlayer().getName(), this.trades);
-		Main.getInstance().filesManager.getUsers().setBlacklist(getPlayer().getName(), this.blacklist);
+		Main.getInstance().filesManager.getUsers().setTrades(getPlayer().getUniqueId().toString(), this.trades);
+		Main.getInstance().filesManager.getUsers().setBlacklist(getPlayer().getUniqueId().toString(), this.blacklist);
 	}
 	
 	// Initialize a new trade
@@ -140,6 +141,17 @@ public class User {
 		return null;
 	}
 	
+	public void spectateTrade(Trade trade) {
+		setSpectatedTrade(trade);
+		getPlayer().openInventory(trade.getTradeInterface().getInv());
+		getPlayer().sendMessage(Messages.convert("spectate_trade_command.spectating", true).replace("%sender%", trade.getSender().getPlayer().getName()).replace("%receiver%", trade.getReceiver().getPlayer().getName()));
+	}
+	
+	public void stopSpectating() {
+		setSpectatedTrade(null);
+		getPlayer().sendMessage(Messages.convert("spectate_trade_command.stop_spectating", true));
+	}
+	
 	public Player getPlayer() {
 		return Bukkit.getPlayer(this.player.getName());
 	}
@@ -166,5 +178,13 @@ public class User {
 	
 	public boolean hasTrades() {
 		return trades;
+	}
+
+	public Trade getSpectatedTrade() {
+		return spectatedTrade;
+	}
+
+	public void setSpectatedTrade(Trade spectatedTrade) {
+		this.spectatedTrade = spectatedTrade;
 	}
 }

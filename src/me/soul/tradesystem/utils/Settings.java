@@ -26,4 +26,5 @@ public class Settings {
 	public final static String PAY_COMMAND = c.getString("Settings.pay_command");
 	public final static boolean MONEY_TRADE = c.getBoolean("Settings.money_trade");
 	public final static int SOUNDS_INTENSITY = c.getInt("Settings.sounds_intensity");
+	public final static int MAX_TRADE_DISTANCE = c.getInt("Settings.max_trade_distance");
 }

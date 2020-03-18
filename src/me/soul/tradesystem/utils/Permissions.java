@@ -8,4 +8,5 @@ public class Permissions {
 	public static final String COOLDOWN_BYPASS = "tradesystem.cooldown_bypass";
 	public static final String BLACKLIST_COMMAND = "tradesystem.blacklist_command";
 	public static final String TOGGLE_TRADES_COMMAND = "tradesystem.toggle_trades_command";
+	public static final String SPECTATE_TRADE_COMMAND = "tradesystem.spectate_trade_command";
 }

@@ -1,6 +1,5 @@
 package me.soul.tradesystem.trades.game;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,11 +20,11 @@ public class InventoryHelper {
 	public static boolean isTradeInventoryEmpty(TradeInterface tradeInt) {
 		// Receiver inventory
 		for(int i : tradeInt.receiverSlots)
-			if(tradeInt.getInv().getItem(i) != null && !tradeInt.getInv().getItem(i).getType().equals(Material.AIR))
+			if(tradeInt.getInv().getItem(i) != null)
 				return false;
 		// Sender inventory
 		for(int i : tradeInt.senderSlots)
-			if(tradeInt.getInv().getItem(i) != null && !tradeInt.getInv().getItem(i).getType().equals(Material.AIR))
+			if(tradeInt.getInv().getItem(i) != null)
 				return false;
 		return true;
 	}
@@ -52,13 +51,13 @@ public class InventoryHelper {
 		
 		for(int i = 0; i < trade.getTradeInterface().senderSlots.length; i++) {
 			ItemStack item = trade.getTradeInterface().getInv().getContents()[trade.getTradeInterface().senderSlots[i]];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				sender.getInventory().addItem(item);
 		}
 		
 		for(int i = 0; i < trade.getTradeInterface().receiverSlots.length; i++) {
 			ItemStack item = trade.getTradeInterface().getInv().getContents()[trade.getTradeInterface().receiverSlots[i]];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				receiver.getInventory().addItem(item);
 		}
 	}
@@ -70,13 +69,13 @@ public class InventoryHelper {
 		
 		for(int i = 0; i < trade.getTradeInterface().senderSlots.length; i++) {
 			ItemStack item = trade.getTradeInterface().getInv().getContents()[trade.getTradeInterface().senderSlots[i]];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				receiver.getInventory().addItem(item);
 		}
 		
 		for(int i = 0; i < trade.getTradeInterface().receiverSlots.length; i++) {
 			ItemStack item = trade.getTradeInterface().getInv().getContents()[trade.getTradeInterface().receiverSlots[i]];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				sender.getInventory().addItem(item);
 		}
 	}
@@ -93,7 +92,7 @@ public class InventoryHelper {
 		int n = 0;
 		for(int i = 0; i < player.getInventory().getContents().length; i++) {
 			ItemStack item = player.getInventory().getContents()[i];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				n++;
 		}
 		return n;
@@ -103,7 +102,7 @@ public class InventoryHelper {
 		int n = 0;
 		for(int i = 0; i < slots.length; i++) {
 			ItemStack item = inv.getContents()[slots[i]];
-			if(item != null && !item.getType().equals(Material.AIR))
+			if(item != null)
 				n++;
 		}
 		return n;

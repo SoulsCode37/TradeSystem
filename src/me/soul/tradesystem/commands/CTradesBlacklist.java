@@ -37,14 +37,18 @@ public class CTradesBlacklist implements CommandExecutor {
 			
 			switch(action.toLowerCase()) {
 			case "add":
-				if(!user.getBlacklist().contains(id))
+				if(!user.getBlacklist().contains(id)) {
 					user.getBlacklist().add(id);
-				sender.sendMessage(Messages.convert("blacklist_command.blacklisted", true).replace("%name%", target));
+					sender.sendMessage(Messages.convert("blacklist_command.blacklisted", true).replace("%name%", target));
+				} else
+					sender.sendMessage(Messages.convert("blacklist_command.already_blacklisted", true).replace("%name%", target));
 				break;
 			case "remove":
-				if(user.getBlacklist().contains(id)) 
+				if(user.getBlacklist().contains(id)) { 
 					user.getBlacklist().remove(id);
-				sender.sendMessage(Messages.convert("blacklist_command.unblacklisted", true).replace("%name%", target));
+					sender.sendMessage(Messages.convert("blacklist_command.unblacklisted", true).replace("%name%", target));
+				} else
+					sender.sendMessage(Messages.convert("blacklist_command.not_blacklisted", true).replace("%name%", target));
 				break;
 			}
 		}

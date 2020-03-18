@@ -170,16 +170,31 @@ public class Trade {
 		if(event.isCancelled())
 			return;
 		
+		// Pay money
+		int senderMoney = getTradeInterface().getSenderMoneyInterface().getMoney();
+		int receiverMoney = getTradeInterface().getReceiverMoneyInterface().getMoney();
+		
+		if(Settings.USE_VAULT) {
+			if(!getTradeInterface().getSenderMoneyInterface().hasEnoughMoney()) {
+				sender.getPlayer().sendMessage(Messages.convert("money_trade_inventory.vault.not_enough_money", true).replace("%money%", senderMoney + ""));
+				getTradeInterface().resetTrade();
+				return;
+			}
+			
+			if(!getTradeInterface().getReceiverMoneyInterface().hasEnoughMoney()) {
+				receiver.getPlayer().sendMessage(Messages.convert("money_trade_inventory.vault.not_enough_money", true).replace("%money%", receiverMoney + ""));
+				getTradeInterface().resetTrade();
+				return;
+			}
+		}
+		
 		setStatus(TradeStatus.FINISHED);
 		
 		sender.getPlayer().getOpenInventory().close();
 		receiver.getPlayer().getOpenInventory().close();
 		
 		InventoryHelper.executeTrade(this);
-		
-		// Pay money
-		int senderMoney = getTradeInterface().getSenderMoneyInterface().getMoney();
-		int receiverMoney = getTradeInterface().getReceiverMoneyInterface().getMoney();
+
 		
 		String rName = getReceiver().getPlayer().getName();
 		String sName = getSender().getPlayer().getName();

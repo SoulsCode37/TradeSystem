@@ -24,6 +24,7 @@ public class RightClickListener implements Listener {
 	private List<String> silentCooldown = new ArrayList<>();
 	
 	// Used to handle right click trade requests
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onRightClick(PlayerInteractAtEntityEvent event) {
 		if(!Settings.RIGHT_CLICK)
@@ -36,7 +37,7 @@ public class RightClickListener implements Listener {
 		
 		Entity right = event.getRightClicked();
 
-		if(right != null && (right instanceof Player)) {
+		if(right != null && (right instanceof Player) && isRealHuman(right)) {
 			Player clicked = (Player)right;
 
 			if(!player.getItemInHand().getType().equals(Material.AIR))
@@ -53,6 +54,11 @@ public class RightClickListener implements Listener {
 				trade.startTrading();
 			}
 		}
+	}
+	
+	// Check if the entity is a real player or a npc
+	private boolean isRealHuman(Entity p) {
+		return Bukkit.getOnlinePlayers().contains(p);
 	}
 	
 	// For 1.14 right-click bugs

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.soul.tradesystem.commands.CSpectateTrade;
 import me.soul.tradesystem.commands.CToggleTrades;
 import me.soul.tradesystem.commands.CTrade;
 import me.soul.tradesystem.commands.CTradeAccept;
@@ -29,27 +30,15 @@ import net.milkbowl.vault.economy.Economy;
 public class Main extends JavaPlugin {
 
 	/** 
-	 * B4-SNAPSHOT update:
-	 * Fixed InventoryClose null pointer
-	 * Fixed PlayerQuit null pointer (Need more tests, please let me know) - Suggested by: @Ask3r and @Luiz_Wenner
-	 * Fixed wrong Sound name TRADE_SEND was TRADE_SENT
-	 * Added AntiScam timer, with 'animation' - Suggested by: @blaukat and @xdDirti
-	 * Increased 1.15 silent cooldown
-	 * Switch from Names to UUID for blacklist command - Suggested by: @haeiven (Github)
-	 * Added automatic languages file update
-	 * Optimized code - Suggested by: @haeiven (Github)
-	 * Vault compability - Suggested by: @haeiven (Github)
-	 * Trade Items filter - Suggested by: @Choubatsu
-	 *  New file: filters.yml
-	 *  3 way to filter:
-	 *   name: Displayname check // Need test
-	 *   lore: Per-line lore check // Need test
-	 *   type: Material name check // Working
+	 * B5:
+	 *  Fixed money dupe bug (Not tested) @lucas2107
+	 *  Fixed NPC error while right-clicking (Not tested) @king_battle
+	 *  Added messages to blacklist-command @lucas2107
+	 *  Switched from names to UUIDs (UsersFile) @lucas2107
+	 *  Added Max trade distance to config @Choubatsu
+	 *  Added spectate trade command (Permissions: tradesystem.spectate_trade_command) @Choubatsu
 	 * 
-	 * Warning! Need config update!
 	**/
-	
-	//TODO Trades History
 	
 	
 	private static Main instance;
@@ -59,7 +48,7 @@ public class Main extends JavaPlugin {
 	public Economy vaultEconomy;
 	
 	// Number of build
-	public final int build = 4;
+	public final int build = 5;
 	
 	ConsoleCommandSender send = getServer().getConsoleSender();
 	
@@ -133,6 +122,7 @@ public class Main extends JavaPlugin {
 		getCommand("tradesystem").setExecutor(new CTradeSystem());
 		getCommand("toggletrades").setExecutor(new CToggleTrades());
 		getCommand("tblacklist").setExecutor(new CTradesBlacklist());
+		getCommand("spectatetrade").setExecutor(new CSpectateTrade());
 	}
 	
     private boolean setupVaultEconomy() {

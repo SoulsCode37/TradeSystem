@@ -22,6 +22,12 @@ public class InventoryCloseListener implements Listener {
 			return;
 		
 		User user = Main.getInstance().usersManager.getUser(event.getPlayer().getName());
+		
+		if(user.getSpectatedTrade() != null) {
+			user.stopSpectating();
+			return;
+		}
+		
 		Trade trade = user.getCurrentTrade();
 		
 		if(trade != null && trade.getStatus().equals(TradeStatus.ACCEPTED)) {
